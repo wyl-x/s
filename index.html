@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>stat</title>
+  <script src="echarts.min.js"></script>
+  <script src="data.js"></script>
+  <style>
+      body {
+          margin: 0;
+          padding: 0;
+      }
+
+      #main {
+          width: 100vw;
+          height: 100vh;
+      }
+  </style>
+</head>
+<body>
+<div id="main"></div>
+<script>
+  data.map(item => item.total = Object.values(item).reduce((curr, result) => {
+    if (typeof curr === 'string') {
+      return result
+    }
+    return curr + result
+  }, 0))
+  const chartDom = document.getElementById('main');
+  const myChart = echarts.init(chartDom);
+  const list = Object.keys(data[0]).filter(item => item !== 'date')
+  const option = {
+    grid: {
+      containLabel: true,
+      bottom: '1%',
+      top: '0%',
+      right: '1%',
+    },
+    yAxis: {
+      type: 'category',
+      position: 'right',
+      axisTick: {
+        show: false
+      },
+      data: data.map(item => item.date)
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    xAxis: {
+      type: 'value',
+      inverse: true,
+      axisLabel: {
+        rotate: 90
+      }
+    },
+    series: list.map(item => ({
+      name: item,
+      type: 'line',
+      data: data.map(da => da[item])
+    })),
+  };
+
+  myChart.setOption(option);
+</script>
+</body>
+</html>
