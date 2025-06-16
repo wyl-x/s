@@ -23,7 +23,7 @@
 <body>
 <div id="main"></div>
 <script>
-  data.map(item => item.total = Object.values(item).reduce((curr, result) => {
+  data.forEach(item => item.total = Object.values(item).reduce((curr, result) => {
     if (typeof curr === 'string') {
       return result
     }
@@ -32,7 +32,37 @@
   const chartDom = document.getElementById('main');
   const myChart = echarts.init(chartDom);
   const list = Object.keys(data[0]).filter(item => item !== 'date')
-  const option = {
+  const isHorizontal = window.innerWidth > window.innerHeight // 判断横屏还是竖屏
+  const option = isHorizontal? {
+    grid: {
+      containLabel: true,
+      left: '1%',
+      bottom: '5%',
+      top: '5%',
+      right: '1%',
+    },
+    xAxis: {
+      type: 'category',
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        rotate: 45
+      },
+      data: data.map(item => item.date)
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: list.map(item => ({
+      name: item,
+      type: 'line',
+      data: data.map(da => da[item])
+    })),
+  } : {
     grid: {
       containLabel: true,
       bottom: '1%',
