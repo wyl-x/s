@@ -58,14 +58,14 @@
     label: {
       show: true,
       formatter: (params) => {
+        const lastTotal = params.dataIndex ? data[params.dataIndex - 1][params.seriesName] : 0
+        const delta = params.value - lastTotal
+        if (params.dataIndex === 0) return delta
         if (params.seriesName === 'total') {
-          console.log(data[params.dataIndex])
-          const lastTotal = params.dataIndex ? data[params.dataIndex - 1].total : 0
-          const delta = params.value - lastTotal
-          if (params.dataIndex === 0) return delta
           return delta > 0 ? `+${delta}\n${params.value}` : `${delta}\n${params.value}`
+        } else {
+          return delta > 0 ? `+${delta}` : `${delta}`
         }
-        return ''
       },
       position: 'top'
     },
@@ -98,14 +98,14 @@
     label: {
       show: true,
       formatter: (params) => {
+        const lastTotal = params.dataIndex ? data[params.dataIndex - 1][params.seriesName] : 0
+        const delta = params.value - lastTotal
+        if (params.dataIndex === 0) return delta
         if (params.seriesName === 'total') {
-          console.log(data[params.dataIndex])
-          const lastTotal = params.dataIndex ? data[params.dataIndex - 1].total : 0
-          const delta = params.value - lastTotal
-          if (params.dataIndex === 0) return delta
           return delta > 0 ? `+${delta}\n${params.value}` : `${delta}\n${params.value}`
+        } else {
+          return delta > 0 ? `+${delta}` : `${delta}`
         }
-        return ''
       },
       position: 'top'
     },
