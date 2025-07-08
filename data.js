@@ -1,4 +1,4 @@
-const cates = ["total", "zf", "zx", "zs", "wx", "gs", "jt"];
+const cates = ["total", "zf", "zx", "zs", "wx", "jt"];
 const data = [
   {
     date: "250603",
@@ -79,6 +79,14 @@ const data = [
     zs: 103085,
     wx: 39507,
     gs: 20836,
+    jt: 5000,
+  },
+  {
+    date: "250708",
+    zf: 307084,
+    zx: 160326,
+    zs: 103097,
+    wx: 54613,
     jt: 5000,
   },
 ];
