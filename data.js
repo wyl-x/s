@@ -1,4 +1,4 @@
-const cates = ["total", "zf", "zx", "zs", "wx", "jt", 'gs'];
+const cates = ["total", "zf", "zx", "zs", "wx", "jt"];
 const data = [
   {
     date: "250603",
