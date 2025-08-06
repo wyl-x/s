@@ -1,115 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>stat</title>
-    <script src="echarts.min.js"></script>
-    <script src="data.js"></script>
-    <style>
+<head>
+  <meta charset="UTF-8"/>
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+  />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <title>stat</title>
+  <script src="echarts.min.js"></script>
+  <script src="data.js"></script>
+  <style>
       body {
-        margin: 0;
-        padding: 0;
+          margin: 0;
+          padding: 0;
       }
 
       #main {
-        width: 100vw;
-        height: 100vh;
+          width: 100vw;
+          height: 100vh;
       }
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
-    <div id="main"></div>
-    <script>
-      data.forEach(
-        (item) =>
-          (item.total = Object.values(item).reduce((curr, result) => {
-            if (typeof curr === "string") {
-              return result;
-            }
-            return curr + result;
-          }, 0))
-      );
-      const chartDom = document.getElementById("main");
-      const myChart = echarts.init(chartDom);
-      const isHorizontal = window.innerWidth > window.innerHeight; // 判断横屏还是竖屏
-      const categoryAxis = isHorizontal
-        ? {
-            type: "category",
-            axisTick: {
-              show: false,
-            },
-            axisLabel: {
-              rotate: 45,
-            },
-            data: data.map((item) => item.date),
-          }
-        : {
-            type: "category",
-            position: "right",
-            axisTick: {
-              show: false,
-            },
-            data: data.map((item) => item.date),
-          };
+<body>
+<div id="main"></div>
+<script>
+  data.forEach(
+    (item) =>
+      (item.total = Object.values(item).reduce((curr, result) => {
+        if (typeof curr === "string") {
+          return result;
+        }
+        return curr + result;
+      }, 0))
+  );
+  const chartDom = document.getElementById("main");
+  const myChart = echarts.init(chartDom);
+  const categoryAxis = {
+    type: "category",
+    axisTick: {
+      show: false,
+    },
+    axisLabel: {
+      rotate: 45,
+    },
+    data: data.map((item) => item.date),
+  }
 
-      const valueAxis = isHorizontal
-        ? {
-            type: "value",
-          }
-        : {
-            type: "value",
-            inverse: true,
-            axisLabel: {
-              rotate: 90,
-            },
-          };
-      const option = {
-        grid: {
-          containLabel: true,
-          left: "1%",
-          bottom: "5%",
-          top: "5%",
-          right: "1%",
-        },
-        xAxis: isHorizontal ? categoryAxis : valueAxis,
-        yAxis: isHorizontal ? valueAxis : categoryAxis,
-        tooltip: {
-          trigger: "axis",
-        },
-        label: {
-          show: true,
-          fontSize: 10,
-          verticalAlign: "middle",
-          formatter: (params) => {
-            const lastTotal = params.dataIndex
-              ? data[params.dataIndex - 1][params.seriesName] || 0
-              : 0;
-            const delta = params.value - lastTotal;
-            if (params.dataIndex === 0) return delta;
-            if (params.seriesName === "total") {
-              return delta > 0
-                ? `+${delta}\n${params.value}`
-                : `${delta}\n${params.value}`;
-            } else {
-              return delta > 0 ? `+${delta}` : `${delta}`;
-            }
-          },
-          position: "top",
-        },
-        series: cates.map((item) => ({
-          name: item,
-          type: "line",
-          data: data.map((da) => da[item] || 0),
-        })),
-      };
 
-      myChart.setOption(option);
-    </script>
-  </body>
+  const valueAxis = {
+    type: "value",
+    splitLine: { show: false },
+    axisLabel: {
+      formatter: (value) => Math.floor(value / 10000)
+    },
+  };
+
+  // 添加一个新的Y轴用于显示total数据
+  const totalAxis = {
+    type: "value",
+    splitLine: { show: false },
+    position: "right",
+    min: 530000,
+    axisLabel: {
+      formatter: (value) => Math.floor(value / 10000)
+    }
+  };
+
+  const option = {
+    grid: {
+      containLabel: true,
+      left: "1%",
+      bottom: "5%",
+      top: "5%",
+      right: "1%",
+    },
+    xAxis: categoryAxis,
+    yAxis: [
+      valueAxis,
+      totalAxis
+    ],
+    tooltip: {
+      trigger: "axis",
+    },
+    label: {
+      show: true,
+      fontSize: 10,
+      verticalAlign: "middle",
+      formatter: (params) => {
+        const lastTotal = params.dataIndex
+          ? data[params.dataIndex - 1][params.seriesName] || 0
+          : 0;
+        const delta = params.value - lastTotal;
+        if (params.dataIndex === 0) return delta;
+        if (params.seriesName === "total") {
+          return delta > 0
+            ? `+${delta}\n${params.value}\n`
+            : `${delta}\n${params.value}\n`;
+        } else {
+          return delta > 0 ? `+${delta}` : `${delta}`;
+        }
+      },
+      position: "top",
+    },
+    series: cates.map((item) => ({
+      name: item,
+      type: "line",
+      yAxisIndex: item === "total" ? 1 : 0, // total系列使用第二个Y轴
+      data: data.map((da) => da[item] || 0),
+    })),
+  };
+
+  myChart.setOption(option);
+</script>
+</body>
 </html>
