@@ -51,7 +51,7 @@
 
   const valueAxis = {
     type: "value",
-    splitLine: { show: false },
+    splitLine: {show: false},
     axisLabel: {
       formatter: (value) => Math.floor(value / 10000)
     },
@@ -60,9 +60,9 @@
   // 添加一个新的Y轴用于显示total数据
   const totalAxis = {
     type: "value",
-    splitLine: { show: false },
+    splitLine: {show: false},
     position: "right",
-    min: 530000,
+    min: 500000,
     axisLabel: {
       formatter: (value) => Math.floor(value / 10000)
     }
@@ -75,6 +75,9 @@
       bottom: "5%",
       top: "5%",
       right: "1%",
+    },
+    legend: {
+      show: true,
     },
     xAxis: categoryAxis,
     yAxis: [
@@ -89,6 +92,9 @@
       fontSize: 10,
       verticalAlign: "middle",
       formatter: (params) => {
+        if (params.axisDimension === 'x') {
+          return params.value
+        }
         const lastTotal = params.dataIndex
           ? data[params.dataIndex - 1][params.seriesName] || 0
           : 0;
